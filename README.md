@@ -1,3 +1,4 @@
+# Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student
 
 ## AIM:
 To write a program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
@@ -7,65 +8,114 @@ To write a program to implement the the Logistic Regression Model to Predict the
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1.Load and preprocess the dataset by removing unwanted columns and encoding categorical variables.
+1. Load and preprocess the dataset by checking missing values and encoding categorical variables into numerical values.
 
-2.Split the data into features (X) and target (y).
+2. Separate features and target, remove unnecessary columns, and split the dataset into training and testing sets.
 
-3.Divide the dataset into training and testing sets.
+3. Scale the features, train the Logistic Regression model using the training data, and predict placement status for the test data.
 
-4.Train the Logistic Regression model using the training data.
+4. Evaluate the model using Accuracy, Confusion Matrix, and Classification Report.
+   
 
-5.Evaluate the model accuracy and visualize the prediction curve.
 ## Program:
 ```
 /*
 Program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
-Developed by: Mithun Kumar V
-RegisterNumber:  212225040236
-*/
+Developed by: KARANKUMAR K
+RegisterNumber: 212225040171
+
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-data = pd.read_csv("Placement_Data (1).csv")
 
-data = data.drop("salary", axis=1)
+df = pd.read_csv("Placement_Data.csv")
 
-data = pd.get_dummies(data, drop_first=True)
+print("First 5 Records:")
+print(df.head())
 
-X = data.drop("status_Placed", axis=1)
-y = data["status_Placed"]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Check Missing Values
+
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+
+# Encode Categorical Columns
+
+le = LabelEncoder()
+
+categorical_columns = [
+    'gender',
+    'ssc_b',
+    'hsc_b',
+    'hsc_s',
+    'degree_t',
+    'workex',
+    'specialisation',
+    'status'
+]
+
+for col in categorical_columns:
+    df[col] = le.fit_transform(df[col])
+
+
+# Separate Features and Target
+
+X = df.drop(["sl_no", "status", "salary"], axis=1)
+y = df["status"]
+
+
+# Train-Test Split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+# Feature Scaling
+
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Train Logistic Regression Model
 
 model = LogisticRegression(max_iter=1000)
+
 model.fit(X_train, y_train)
 
-print("Accuracy:", model.score(X_test, y_test))
+# Prediction
+y_pred = model.predict(X_test)
 
 
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
 
-X1 = X.iloc[:, 0].values.reshape(-1, 1)
+print("\nAccuracy =", accuracy)
 
-model_plot = LogisticRegression(max_iter=1000)
-model_plot.fit(X1, y)
-plt.scatter(X1, y, color='blue')
+# Confusion Matrix
 
-x_values = np.linspace(X1.min(), X1.max(), 100)
-y_values = model_plot.predict_proba(x_values.reshape(-1,1))[:,1]
+print("\nConfusion Matrix")
+print(confusion_matrix(y_test, y_pred))
 
-plt.plot(x_values, y_values)
+# Classification Report
 
-plt.xlabel("Feature")
-plt.ylabel("Probability")
-plt.title("Logistic Regression Curve")
-plt.show()
+print("\nClassification Report")
+print(classification_report(y_test, y_pred))
+
+*/
 ```
 
 ## Output:
-<img width="905" height="594" alt="image" src="https://github.com/user-attachments/assets/a73cbd46-847c-4055-8d2a-82ed0acd80b3" />
+
+<img width="338" height="422" alt="image" src="https://github.com/user-attachments/assets/777e60a6-855e-479c-86e0-063e81e3cb6d" />
+
 
 
 ## Result:
